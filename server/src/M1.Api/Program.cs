@@ -1,4 +1,7 @@
 using M1.Api.Middleware;
+using M1.Infrastructure;
+using M1.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,9 +30,24 @@ var corsOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>
 builder.Services.AddCors(options => options.AddPolicy("Frontend", policy =>
     policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddHealthChecks();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 
 var app = builder.Build();
+
+// Database init: migrations on PostgreSQL (production), EnsureCreated for the
+// zero-setup SQLite/SQL Server dev paths. Seeding is idempotent.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var provider = builder.Configuration["Database:Provider"] ?? "Sqlite";
+    if (provider == "Postgres")
+        await db.Database.MigrateAsync();
+    else
+        await db.Database.EnsureCreatedAsync();
+
+    await DbSeeder.SeedAsync(db, builder.Configuration, app.Logger);
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseSerilogRequestLogging();
