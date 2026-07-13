@@ -1,0 +1,23 @@
+# .NET
+bin/
+obj/
+*.user
+appsettings.*.Local.json
+
+# Node
+node_modules/
+dist/
+
+# Env & secrets
+.env
+.env.*
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log

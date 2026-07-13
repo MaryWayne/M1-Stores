@@ -1,0 +1,32 @@
+# Local development stack.
+# SQL Server is used locally; production uses PostgreSQL (Neon) via the same EF Core code.
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "M1Stores!Dev2026"   # local dev only — never reuse in prod
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'M1Stores!Dev2026' -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
+
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      Database__Provider: SqlServer
+      ConnectionStrings__Default: "Server=db,1433;Database=M1Stores;User Id=sa;Password=M1Stores!Dev2026;TrustServerCertificate=True"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mssql-data:
