@@ -1,4 +1,5 @@
 using System.Text.Json;
+using M1.Application.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace M1.Api.Middleware;
@@ -19,17 +20,25 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Unhandled exception for {Method} {Path}",
-                context.Request.Method, context.Request.Path);
+            var (status, title) = exception switch
+            {
+                NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+                DomainRuleException => (StatusCodes.Status400BadRequest, exception.Message),
+                UnauthorizedException => (StatusCodes.Status401Unauthorized, exception.Message),
+                _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+            };
 
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            if (status == StatusCodes.Status500InternalServerError)
+                logger.LogError(exception, "Unhandled exception for {Method} {Path}",
+                    context.Request.Method, context.Request.Path);
+
+            context.Response.StatusCode = status;
             context.Response.ContentType = "application/problem+json";
 
             var problem = new ProblemDetails
             {
-                Status = StatusCodes.Status500InternalServerError,
-                Title = "An unexpected error occurred.",
-                Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+                Status = status,
+                Title = title,
                 Instance = context.Request.Path
             };
 
