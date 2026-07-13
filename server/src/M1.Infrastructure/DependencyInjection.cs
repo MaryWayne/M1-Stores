@@ -1,8 +1,10 @@
 using M1.Application.Auth;
+using M1.Application.Catalog;
 using M1.Application.Interfaces;
 using M1.Infrastructure.Auth;
 using M1.Infrastructure.Email;
 using M1.Infrastructure.Persistence;
+using M1.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +43,11 @@ public static class DependencyInjection
 
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<CatalogService>();
+        services.AddScoped<AdminCatalogService>();
+        services.AddSingleton<IImageStorage, LocalImageStorage>();
 
         services.AddSingleton<IAppUrls, AppUrls>();
         services.AddSingleton<IJwtService, JwtService>();

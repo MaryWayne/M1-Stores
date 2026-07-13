@@ -112,6 +112,10 @@ app.UseSwaggerUI(options =>
     options.DocumentTitle = "M1 Stores API";
 });
 
+// Serve uploaded product images from wwwroot/uploads.
+Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "wwwroot"));
+app.UseStaticFiles();
+
 app.UseCors("Frontend");
 app.UseRateLimiter();
 app.UseAuthentication();

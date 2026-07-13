@@ -46,5 +46,22 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             property.SetPrecision(18);
             property.SetScale(2);
         }
+
+        // SQLite can't ORDER BY DateTimeOffset or decimal — store both as
+        // order-preserving primitives (timestamps are UTC; double precision is
+        // fine for the dev/demo path). Postgres/SQL Server are unaffected.
+        if (Database.IsSqlite())
+        {
+            var dateConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.DateTimeOffsetToBinaryConverter();
+            var decimalConverter = new Microsoft.EntityFrameworkCore.Storage.ValueConversion.CastingConverter<decimal, double>();
+
+            foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
+            {
+                if (property.ClrType == typeof(DateTimeOffset) || property.ClrType == typeof(DateTimeOffset?))
+                    property.SetValueConverter(dateConverter);
+                else if (property.ClrType == typeof(decimal) || property.ClrType == typeof(decimal?))
+                    property.SetValueConverter(decimalConverter);
+            }
+        }
     }
 }
