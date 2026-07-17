@@ -1,0 +1,25 @@
+# Render Blueprint — deploys the M1 Stores API as a free Docker web service.
+# In the Render dashboard: New → Blueprint → connect the M1-Stores repo.
+services:
+  - type: web
+    name: m1-stores-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:10000
+      - key: Database__Provider
+        value: Postgres
+      - key: ConnectionStrings__Default
+        sync: false # paste the Neon PostgreSQL connection string
+      - key: Jwt__Key
+        generateValue: true
+      - key: App__FrontendUrl
+        sync: false # your Vercel URL, e.g. https://m1-stores.vercel.app
+      - key: Cors__Origins__0
+        sync: false # same Vercel URL
+      - key: Seed__AdminPassword
+        generateValue: true

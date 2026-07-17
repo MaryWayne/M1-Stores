@@ -46,17 +46,28 @@ Run tests:
 cd server && dotnet test
 ```
 
+## Features
+
+**Storefront** — browsing with search/filter/sort/pagination, product pages with
+variants and verified-purchase reviews, cart, wishlist, coupons, checkout with
+M-Pesa / Stripe / demo payments, order tracking with timeline, invoices,
+notifications, dark mode.
+**Admin** — analytics dashboard with revenue chart, product & inventory
+management, order fulfilment with tracking, customers, coupons.
+**Demo accounts** — customer `demo@m1stores.com` / `Demo!2026`, admin
+`admin@m1stores.com` / `Admin!2026`.
+
 ## Roadmap
 
 - [x] Module 0 — Architecture, Clean Architecture solution, React scaffold, Docker, CI
-- [ ] Module 1 — Domain model, EF Core, migrations, seed data
-- [ ] Module 2 — Auth: JWT, refresh tokens, email verification, password reset, Google login, roles
-- [ ] Module 3 — Product catalog: search, filtering, pagination, image upload
-- [ ] Module 4 — Cart, wishlist, checkout, orders, M-Pesa + Stripe payments
-- [ ] Module 5 — Reviews, admin dashboard API, sales reports
-- [ ] Module 6 — Storefront UI
-- [ ] Module 7 — Admin dashboard UI
-- [ ] Module 8 — Deployment: Render + Neon + Vercel
+- [x] Module 1 — Domain model, EF Core, migrations, seed data
+- [x] Module 2 — Auth: JWT, refresh tokens, email verification, password reset, Google login, roles
+- [x] Module 3 — Product catalog: search, filtering, pagination, image upload
+- [x] Module 4 — Cart, wishlist, checkout, orders, M-Pesa + Stripe payments
+- [x] Module 5 — Reviews, admin dashboard API, sales reports
+- [x] Module 6 — Storefront UI
+- [x] Module 7 — Admin dashboard UI
+- [ ] Module 8 — Live deployment: [step-by-step guide](docs/DEPLOYMENT.md) (Render + Neon + Vercel, all free)
 
 ## Project structure
 
