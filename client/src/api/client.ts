@@ -1,7 +1,11 @@
 import { useAuth } from "../stores/auth";
 import type { AuthResponse } from "./types";
 
-const BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ?? "";
+// Production falls back to the Render service named in render.yaml;
+// set VITE_API_URL in Vercel to override.
+const BASE =
+  (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ??
+  (import.meta.env.PROD ? "https://m1-stores-api.onrender.com" : "");
 
 export class ApiError extends Error {
   status: number;
