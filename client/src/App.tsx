@@ -1,5 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import StorefrontLayout from "./layouts/StorefrontLayout";
+import AdminLayout from "./layouts/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminOrders from "./pages/admin/AdminOrders";
+import { AdminCustomers, AdminCoupons } from "./pages/admin/AdminCustomersCoupons";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
@@ -20,6 +25,13 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="products" element={<AdminProducts />} />
+        <Route path="orders" element={<AdminOrders />} />
+        <Route path="customers" element={<AdminCustomers />} />
+        <Route path="coupons" element={<AdminCoupons />} />
+      </Route>
       <Route element={<StorefrontLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
