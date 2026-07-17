@@ -59,6 +59,9 @@ public static class DependencyInjection
         services.AddScoped<AddressService>();
         services.AddScoped<NotificationService>();
 
+        services.AddScoped<M1.Application.Reviews.ReviewService>();
+        services.AddScoped<M1.Application.Admin.AdminService>();
+
         services.AddHttpClient();
         services.AddScoped<IPaymentGateway, FakePaymentGateway>();
         services.AddScoped<IPaymentGateway, MpesaPaymentGateway>();

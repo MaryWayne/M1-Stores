@@ -253,7 +253,7 @@ public class OrdersService(
         catch { /* email failures must never break checkout */ }
     }
 
-    internal static OrderDto ToDto(Order o)
+    public static OrderDto ToDto(Order o)
     {
         var payment = o.Payments.OrderByDescending(p => p.CreatedAt).FirstOrDefault();
         var timeline = new List<OrderTimelineEntry>
