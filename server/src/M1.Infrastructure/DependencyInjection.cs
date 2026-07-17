@@ -1,8 +1,10 @@
 using M1.Application.Auth;
 using M1.Application.Catalog;
 using M1.Application.Interfaces;
+using M1.Application.Shopping;
 using M1.Infrastructure.Auth;
 using M1.Infrastructure.Email;
+using M1.Infrastructure.Payments;
 using M1.Infrastructure.Persistence;
 using M1.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +50,19 @@ public static class DependencyInjection
         services.AddScoped<CatalogService>();
         services.AddScoped<AdminCatalogService>();
         services.AddSingleton<IImageStorage, LocalImageStorage>();
+
+        services.AddSingleton(config.GetSection("Store").Get<StoreOptions>() ?? new StoreOptions());
+        services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<CartService>();
+        services.AddScoped<OrdersService>();
+        services.AddScoped<AddressService>();
+        services.AddScoped<NotificationService>();
+
+        services.AddHttpClient();
+        services.AddScoped<IPaymentGateway, FakePaymentGateway>();
+        services.AddScoped<IPaymentGateway, MpesaPaymentGateway>();
+        services.AddScoped<IPaymentGateway, StripePaymentGateway>();
 
         services.AddSingleton<IAppUrls, AppUrls>();
         services.AddSingleton<IJwtService, JwtService>();
